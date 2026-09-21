@@ -10,7 +10,7 @@ MGR=/usr/local/bin/udp; DB=$DATA/users.db; PORT=36712
 root(){ [[ $EUID == 0 ]] || { echo 'ต้องใช้สิทธิ์ root'; exit 1; }; }
 tty(){ printf '%s' "$1" >&2; IFS= read -r REPLY </dev/tty || exit 0; }
 pause(){ tty '\nกด Enter เพื่อกลับ... '; }
-confirm(){ tty "$1 [y/N]: "; [[ $REPLY =~ ^[Yy]$ ]]; }
+confirm(){ tty "$1 [y/N]: "; REPLY="${REPLY//$'\r'/}"; REPLY="${REPLY//[[:space:]]/}"; [[ "$REPLY" == [Yy] || "$REPLY" == [Yy][Ee][Ss] ]]; }
 reboot_vps(){ echo 'กำลังรีสตาร์ท VPS...'; sleep 2; systemctl reboot; }
 setup(){ install -d -m755 "$BASE" "$DATA"; touch "$DB"; chmod 600 "$DB"; }
 port_ok(){ [[ $1 =~ ^[0-9]+$ ]] && ((10#$1>0 && 10#$1<65536)); }
